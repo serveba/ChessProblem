@@ -26,7 +26,8 @@ public class ChessChallenge {
 	private static final int CONF_KNIGHT_INDEX = 4;
 	
 	/**
-	 * Problem constructor and entry point of the application
+	 * Problem constructor and entry point of the application    
+     * 
 	 * 
 	 * @param rowsNumber
 	 * @param columnsNumber
@@ -248,6 +249,13 @@ public class ChessChallenge {
     	}
     }
     
+
+    /**
+     * Run the program from command line 
+     * rm *.class && javac ChessBoard.java && javac ChessChallenge.java && java ChessChallenge
+     * 
+     * @param args [description]
+     */
     public static void main(String[] args) {
     	
     	Properties properties = Utils.getResourceProps("conf/tableAndPieces.properties", true, ChessChallenge.class);
