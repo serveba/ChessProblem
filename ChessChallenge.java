@@ -257,31 +257,21 @@ public class ChessChallenge {
      * @param args [description]
      */
     public static void main(String[] args) {
-    	
-    	Properties properties = Utils.getResourceProps("conf/tableAndPieces.properties", true, ChessChallenge.class);
-    	    		    
-        int rows = Integer.parseInt(properties.getProperty("rows"));         
-        int columns = Integer.parseInt(properties.getProperty("columns"));             
-        int nKings = Integer.parseInt(properties.getProperty("nKings"));        
-        int nQueens = Integer.parseInt(properties.getProperty("nQueens"));        
-        int nBishops = Integer.parseInt(properties.getProperty("nBishops"));         
-        int nKnights = Integer.parseInt(properties.getProperty("nKnights"));            
-       int nRooks = Integer.parseInt(properties.getProperty("nRooks"));        
-//        
-//        int rows = 2;
-//        int columns = 2;                      
-//        int nKings = 1;
-//        int nQueens = 0;
-//        int nBishops = 0;
-//        int nKnights = 0;
-//        int nRooks = 1;
+
+        int rows = 3;
+        int columns = 3;          
+
+        int nKings = 0;
+        int nQueens = 0;
+        int nBishops = 0;
+        int nKnights = 0;
+        int nRooks = 1;
         
         if (rows == columns){
         	 ChessChallenge problem = new ChessChallenge(rows, columns, nKings, nQueens, nBishops, nRooks, nKnights);        	
              problem.printSolutions();
-        }
-        else{
-        	System.out.println("The dimensions of the board are not square");
+        } else{
+        	System.out.println("The dimensions of the board have to be square");
         }     
     }
 	
