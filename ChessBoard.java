@@ -474,11 +474,7 @@ public class ChessBoard {
      * @return int
      */
     public int getColumnCount() {
-    	if(rows>1) {
-    		return columns;
-    	} else {
-    		return 0;
-    	}
+        return columns;
     }
 	
 }
