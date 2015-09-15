@@ -297,20 +297,19 @@ public class ChessBoard {
      */
     private void invalidateKnights(int x, int y) {
         //Top-left area
-        if(isEmpty(x-2, y-1)) board[x-2][y-1] = INVALID_POS;
-        if(isEmpty(x-1, y-2)) board[x-1][y-2] = INVALID_POS;
-        
+        invalidateIfEmpty(x-2, y-1);
+        invalidateIfEmpty(x-1, y-2);
         //Top-right area
-        if(isEmpty(x-2, y+1)) board[x-2][y+1] = INVALID_POS;
-        if(isEmpty(x-1, y+2)) board[x-1][y+2] = INVALID_POS;
+        invalidateIfEmpty(x-2, y+1);
+        invalidateIfEmpty(x-1, y+2);
         
         //Down-left area
-        if(isEmpty(x+1, y-2)) board[x+1][y-2] = INVALID_POS;
-        if(isEmpty(x+2, y-1)) board[x+2][y-1] = INVALID_POS;
+        invalidateIfEmpty(x+1, y-2);
+        invalidateIfEmpty(x+2, y-1);
                 
         //Down-right area
-        if(isEmpty(x+1, y+2)) board[x+1][y+2] = INVALID_POS;
-        if(isEmpty(x+2, y+1)) board[x+2][y+1] = INVALID_POS;
+        invalidateIfEmpty(x+1, y+2);
+        invalidateIfEmpty(x+2, y+1);
     }
 
     /**
