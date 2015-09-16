@@ -53,10 +53,10 @@ public class ChessBoard {
      */
     public int[] putQueen(int x, int y) {
     	int [] newPos = new int []{INVALID_POS, INVALID_POS};
-        System.out.println("isEmpty(" + x + ", " + y + "): " + isEmpty(x, y));
-        System.out.println("checkSafeRowAndColumn(" + x + ", " + y + "): " + checkSafeRowAndColumn(x, y));
-        System.out.println("checkSafeDiagonals(" + x + ", " + y + "): " + checkSafeDiagonals(x, y));
-        System.out.println("checkSafeKnights(" + x + ", " + y + "): " + checkSafeKnights(x, y));
+        //System.out.println("isEmpty(" + x + ", " + y + "): " + isEmpty(x, y));
+        //System.out.println("checkSafeRowAndColumn(" + x + ", " + y + "): " + checkSafeRowAndColumn(x, y));
+        //System.out.println("checkSafeDiagonals(" + x + ", " + y + "): " + checkSafeDiagonals(x, y));
+        //System.out.println("checkSafeKnights(" + x + ", " + y + "): " + checkSafeKnights(x, y));
 
     	if(isEmpty(x, y) && checkSafeRowAndColumn(x, y) 
             &&  checkSafeDiagonals(x, y) && checkSafeKnights(x, y)){
@@ -128,7 +128,7 @@ public class ChessBoard {
      */
     public int[] putRook(int x, int y) {
     	int [] newPos = new int []{INVALID_POS, INVALID_POS};
-    	if(isEmpty(x, y) && checkSafeRowAndColumn(x, y) /*&& checkSafeKnights(x, y)*/ ) {
+    	if(isEmpty(x, y) && checkSafeRowAndColumn(x, y) && checkSafeKnights(x, y) ) {
 			invalidateRowAndColumn(x, y);
 			board[x][y] = ROOKS_CODE;        		    			
 			newPos = next(x, y);
