@@ -9,7 +9,10 @@ public class ChessBoard {
     final int rows;
     final int columns;
     int[][] board;
-    
+
+    //for comparing boards
+    StringBuilder hashCode;
+
     public static final int UNAVAIABLE     = -2;
     public static final int INVALID_POS    = -1;
 
@@ -18,7 +21,7 @@ public class ChessBoard {
     static final int QUEEN_CODE            = 2;
     static final int BISHOPS_CODE          = 3;
     static final int ROOKS_CODE            = 4;
-    static final int KNIGTHS_CODE          = 5;
+    static final int KNIGHTS_CODE          = 5;
 
     /**
      * Constructor
@@ -31,13 +34,17 @@ public class ChessBoard {
         rows = rowsNumber;
         columns = columnsNumber;
         board = new int[rows][columns];
-
+        hashCode= new StringBuilder();
+        
         // empty board
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < board[i].length; j++) {
                 board[i][j] = EMPTY_CODE;
+                hashCode.append(EMPTY_CODE); 
             }
-        }              
+        }
+
+        System.out.println(getHashCode());
     }
    
     /**
@@ -65,7 +72,8 @@ public class ChessBoard {
             //printBoard();
 			invalidateDiagonals(x, y);
             //printBoard();
-			board[x][y] = QUEEN_CODE;    			
+			board[x][y] = QUEEN_CODE;    		
+			hashCode.setCharAt(x*rows + y, (char)QUEEN_CODE);            	
 			newPos = next(x, y);    		
     	}
 
@@ -88,7 +96,8 @@ public class ChessBoard {
     	int [] newPos = new int []{INVALID_POS, INVALID_POS};
     	if(isEmpty(x, y) && checkSafeAdjacent(x, y) && checkSafeKnights(x, y)){
 			invalidateAdjacent(x, y);
-			board[x][y] = KING_CODE;    			
+			board[x][y] = KING_CODE;  
+            hashCode.setCharAt(x*rows + y, (char)KING_CODE);
 			newPos = next(x, y);
     	}    	
     	return newPos;
@@ -109,7 +118,8 @@ public class ChessBoard {
     	int [] newPos = new int []{INVALID_POS, INVALID_POS};
         if(isEmpty(x, y) && checkSafeDiagonals(x, y) && checkSafeKnights(x, y)) {
 			invalidateDiagonals(x, y);
-			board[x][y] = BISHOPS_CODE;        		    			
+			board[x][y] = BISHOPS_CODE;     
+            hashCode.setCharAt(x*rows + y, (char)BISHOPS_CODE);
 			newPos = next(x, y);
     	}
     	return newPos;
@@ -130,7 +140,8 @@ public class ChessBoard {
     	int [] newPos = new int []{INVALID_POS, INVALID_POS};
     	if(isEmpty(x, y) && checkSafeRowAndColumn(x, y) && checkSafeKnights(x, y) ) {
 			invalidateRowAndColumn(x, y);
-			board[x][y] = ROOKS_CODE;        		    			
+			board[x][y] = ROOKS_CODE;        
+			hashCode.setCharAt(x*rows + y, (char)ROOKS_CODE);
 			newPos = next(x, y);
     	}    	
     	return newPos;
@@ -151,7 +162,8 @@ public class ChessBoard {
     	int [] newPos = new int []{INVALID_POS, INVALID_POS};
     	if(isEmpty(x, y) && checkSafeKnights(x, y)){
 			invalidateKnights(x, y);
-			board[x][y] = KNIGTHS_CODE;        		    			
+			board[x][y] = KNIGHTS_CODE;
+			hashCode.setCharAt(x*rows + y, (char)KNIGHTS_CODE);
 			newPos = next(x, y);
     	}    	    
     	return newPos;
@@ -366,7 +378,7 @@ public class ChessBoard {
         if(x >= rows || y >= columns || x < 0 || y < 0) 
             return false;        
 
-        return board[x][y] == KNIGTHS_CODE;
+        return board[x][y] == KNIGHTS_CODE;
     }
 
     /**
@@ -424,6 +436,7 @@ public class ChessBoard {
             }
             System.out.println("+");
         }
+        System.out.println("hashCode: " + getHashCode());
     }
 
     /**
@@ -448,7 +461,7 @@ public class ChessBoard {
             case ROOKS_CODE:
                 charCode = 'R';
                 break;
-            case KNIGTHS_CODE:
+            case KNIGHTS_CODE:
                 charCode = 'N';
                 break;
             default:
@@ -457,6 +470,16 @@ public class ChessBoard {
         }
 
         return charCode;
+    }
+
+    /**
+     * Gets the hash code that identifies the board.
+     * This is usefull for comparing boards
+     * 
+     * @return [description]
+     */
+    public String getHashCode() {
+    	return hashCode.toString();
     }
     
     /**

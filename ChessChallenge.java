@@ -1,5 +1,6 @@
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Stack;
@@ -9,7 +10,7 @@ import java.lang.InterruptedException;
 
 public class ChessChallenge {
 
-	private List<ChessBoard> solutions;
+	HashSet<String> solutions;
 	
 	private int [] configuration;
 	
@@ -29,7 +30,7 @@ public class ChessChallenge {
 
     /**
      * Run the program from command line 
-     * rm *.class && javac ChessBoard.java && javac ChessChallenge.java && java ChessChallenge
+     * rm *.class && javac *.java && java ChessChallenge
      * 
      * @param args [description]
      */
@@ -68,7 +69,7 @@ public class ChessChallenge {
     	this.rowsNumber = rowsNumber;
     	this.colsNumber = columnsNumber;
     	this.configuration = new int[]{nQueens, nBishops, nRooks, nKings, nKnights};
-    	solutions = new ArrayList<ChessBoard>();
+    	solutions = new HashSet<String>();
     	ChessBoard board = new ChessBoard(rowsNumber, columnsNumber);    	
         int solutionsCount = 0;
         solutionsCount = solve(new int[]{nQueens, nBishops, nRooks, nKings, nKnights}, board, 0, 0, solutionsCount);   
@@ -102,11 +103,12 @@ public class ChessChallenge {
         //board.printBoard();
     	
     	int [] newPos = new int []{ChessBoard.INVALID_POS, ChessBoard.INVALID_POS};
-
-    	//We get a solution!!
-    	if(countPieces(conf) == 0) {
+    	
+    	String hashCode = board.getHashCode();
+    	if(countPieces(conf) == 0 && !solutions.contains(hashCode)) {
+    		//We get a solution!!
             board.printBoard();
-    		solutions.add(board);
+    		solutions.add(hashCode);
     		return 1;
     	}
 
@@ -313,9 +315,9 @@ public class ChessChallenge {
         	}else {
         		System.out.println("There are " + numberOfSolutions + "  solutions :)");
         	}
-        	for (ChessBoard solution : solutions) {
-				solution.printBoard();
-			}
+//        	for (ChessBoard solution : solutions) {
+//				solution.printBoard();
+//			}
         }else {
         	System.out.println("There is no solutions for the given configuration :(");
         }
