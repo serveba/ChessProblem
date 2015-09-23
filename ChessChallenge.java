@@ -1,4 +1,5 @@
 
+import java.sql.Date;
 import java.util.HashSet;
 
 
@@ -12,11 +13,15 @@ public class ChessChallenge {
 	
 	private int colsNumber;
 	
+	private long init;
+	
+	private long end;
+	
 	private static final int CONF_QUEEN_INDEX = 0;
 	
 	private static final int CONF_BISHOP_INDEX = 1;
 	
-	private static final int CONF_ROOKS_INDEX = 2;
+	private static final int CONF_ROOK_INDEX = 2;
 	
 	private static final int CONF_KING_INDEX = 3;
 	
@@ -30,14 +35,26 @@ public class ChessChallenge {
      */
     public static void main(String[] args) {
 
-        int rows = 3;
-        int columns = 3;          
-
-        int nKings = 0;
+//        int rows = 3;
+//        int columns = 3;          
+//
+//        int nKings = 0;
+//        int nQueens = 2;
+//        int nBishops = 0;
+//        int nKnights = 0;
+//        int nRooks = 0;        
+        
+        //BIG PROBLEM
+        int rows = 7;
+        int columns = 7;          
+        
+        int nKings = 2;
         int nQueens = 2;
-        int nBishops = 0;
-        int nKnights = 0;
+        int nBishops = 2;
+        int nKnights = 1;
         int nRooks = 0;
+        
+         
         
         if (rows == columns){
              ChessChallenge problem = new ChessChallenge(rows, columns, nKings, nQueens, nBishops, nRooks, nKnights);
@@ -60,12 +77,15 @@ public class ChessChallenge {
 	 * @param nKnights
 	 */
     public ChessChallenge(int rowsNumber, int columnsNumber, int nKings, int nQueens, int nBishops, int nRooks, int nKnights) {
+        this.init = System.currentTimeMillis();
     	this.rowsNumber = rowsNumber;
     	this.colsNumber = columnsNumber;
     	solutions = new HashSet<String>();
     	ChessBoard board = new ChessBoard(rowsNumber, columnsNumber);
     	this.config = new int[]{nQueens, nBishops, nRooks, nKings, nKnights};
         solve(this.config, board);   
+        long elapsed = System.currentTimeMillis() - init;
+        System.out.println("elapsed time: " + elapsed + "  ms.");
     }    
     
     /**
@@ -77,7 +97,7 @@ public class ChessChallenge {
     private int countPieces(int [] configuration) {
     	return configuration[ChessChallenge.CONF_QUEEN_INDEX] +
     		   configuration[ChessChallenge.CONF_BISHOP_INDEX] +
-    		   configuration[ChessChallenge.CONF_ROOKS_INDEX] +
+    		   configuration[ChessChallenge.CONF_ROOK_INDEX] +
     		   configuration[ChessChallenge.CONF_KING_INDEX] +
     		   configuration[ChessChallenge.CONF_KNIGHT_INDEX];
     }
@@ -108,19 +128,36 @@ public class ChessChallenge {
             
             for (int j = 0; j < board.getColumnCount(); j++) {
                 
-                int [] confCopy = new int[conf.length];   
-                System.arraycopy(conf, 0, confCopy, 0, conf.length);
-                putQueen(confCopy, board, i, j);
+                putPiece(getConfigCopy(conf), board, i, j, CONF_QUEEN_INDEX);
+                
+                putPiece(getConfigCopy(conf), board, i, j, CONF_BISHOP_INDEX);
+                
+                putPiece(getConfigCopy(conf), board, i, j, CONF_ROOK_INDEX);
+                
+                putPiece(getConfigCopy(conf), board, i, j, CONF_KNIGHT_INDEX);
+                
+                putPiece(getConfigCopy(conf), board, i, j, CONF_KING_INDEX);
                 
             } 
         }
     }
     
+    /**
+     * Returns a copy of the given configuration array
+     * 
+     * @param conf
+     * @return
+     */
+    private int[] getConfigCopy(int [] conf) {
+        int [] configCopy = new int[conf.length];   
+        System.arraycopy(conf, 0, configCopy, 0, conf.length);
+        
+        return configCopy;
+    }
     
     /**
-     * If we can put the piece then we cut the piece from the conf array
-     * and call to the solve method with the new conf array and
-     * the copy of the board
+     * If we have pieces of the given index into the configuration array, 
+     * then we check if we can put the piece
      * 
      * @param conf
      * @param board
@@ -129,26 +166,43 @@ public class ChessChallenge {
      * @param confIndex
      * @param pieceName
      */
-    private void putQueen(int []conf, ChessBoard sourceBoard, int rowIndex, int colIndex) {        
+    private void putPiece (int [] conf, ChessBoard sourceBoard, int x, int y, int pieceIndex) {
         
-        if(conf[CONF_QUEEN_INDEX] > 0) {
+        if(conf[pieceIndex] > 0) {
             
             ChessBoard updatedBoard = new ChessBoard(sourceBoard);
-             
-            //System.out.println("rowIndex: "  + rowIndex + " colIndex: " + colIndex);
-            boolean piecePlaced = updatedBoard.putQueen(rowIndex, colIndex);
+            boolean piecePlaced = false;
+            
+            if(pieceIndex == CONF_KING_INDEX) {
+                
+                piecePlaced = updatedBoard.putKing(x, y);
+                
+            }else if(pieceIndex == CONF_QUEEN_INDEX) {
+                
+                piecePlaced = updatedBoard.putQueen(x, y);
+                
+            }else if(pieceIndex == CONF_BISHOP_INDEX) {
+                
+                piecePlaced = updatedBoard.putBishop(x, y);
+                
+            }else if(pieceIndex == CONF_ROOK_INDEX) {
+                
+                piecePlaced = updatedBoard.putRook(x, y);
+                
+            }else if(pieceIndex == CONF_KNIGHT_INDEX) {
+                
+                piecePlaced = updatedBoard.putKnight(x, y);
+                
+            }
             
             if(piecePlaced) {            
-                conf[CONF_QUEEN_INDEX]--;                
-                //System.out.println("Queen put");                
+                conf[pieceIndex]--;                
                 solve(conf, updatedBoard);
             }else {
-                //solve(conf, sourceBoard);
                 return; 
             } 
-        }  
-    }
-    
+        } 
+    }    
     
     /**
      * Adds the hashCode of the board solutions and the 3 board rotations. 
@@ -167,31 +221,31 @@ public class ChessChallenge {
         ChessBoard aux = new ChessBoard(board);
         
         if(!solutions.contains(aux.getHashCode())){
-            aux.printBoard();
+            //aux.printBoard();
             solutions.add(aux.getHashCode());
         }
         
         aux.rotate();
         
         if(!solutions.contains(aux.getHashCode())){               
-            aux.printBoard();
+            //aux.printBoard();
             solutions.add(aux.getHashCode());
         }
         
         aux.rotate();
         if(!solutions.contains(aux.getHashCode())){
-            aux.printBoard();
+            //aux.printBoard();
             solutions.add(aux.getHashCode());
         }
         
         
         aux.rotate();
         if(!solutions.contains(aux.getHashCode())) {
-            aux.printBoard();
+            //aux.printBoard();
             solutions.add(aux.getHashCode());
         }
         
-        System.out.println(solutions.size() + " solutions found");
+        System.out.println(solutions.size() + " solutions");
     }
     
     /**

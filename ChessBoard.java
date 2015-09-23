@@ -18,12 +18,12 @@ public class ChessBoard {
     public static final int UNAVAIABLE     = -2;
     public static final int INVALID_POS    = -1;
 
-    private static final int EMPTY_CODE            = 0;
-    private static final int KING_CODE             = 1;
-    private static final int QUEEN_CODE            = 2;
-    private static final int BISHOPS_CODE          = 3;
-    private static final int ROOKS_CODE            = 4;
-    private static final int KNIGHTS_CODE          = 5;
+    public static final int EMPTY_CODE            = 0;
+    public static final int KING_CODE             = 1;
+    public static final int QUEEN_CODE            = 2;
+    public static final int BISHOP_CODE          = 3;
+    public static final int ROOK_CODE            = 4;
+    public static final int KNIGHT_CODE          = 5;
     
     
     /**
@@ -66,8 +66,6 @@ public class ChessBoard {
                 hashCode.append(EMPTY_CODE); 
             }
         }
-
-        System.out.println(getHashCode());
     }
    
     /**
@@ -82,21 +80,16 @@ public class ChessBoard {
      * @return  
      */
     public boolean putQueen(int x, int y) {
-    	//int [] newPos = new int []{INVALID_POS, INVALID_POS};
     	boolean result = false;
 
-    	if(isEmpty(x, y) && checkSafeRowAndColumn(x, y) 
-            &&  checkSafeDiagonals(x, y) && checkSafeKnights(x, y)){
-
-			invalidateRowAndColumn(x, y);
-            //printBoard();
-			invalidateDiagonals(x, y);
-            //printBoard();
-			board[x][y] = QUEEN_CODE;    		
-			hashCode.setCharAt(x*rows + y, Character.forDigit(QUEEN_CODE, 10));
-			result = true;
-			//newPos = next(x, y);    		
-    	}
+        if (isEmpty(x, y) && checkSafeRowAndColumn(x, y) 
+                && checkSafeDiagonals(x, y) && checkSafeKnights(x, y)) {
+            invalidateRowAndColumn(x, y);
+            invalidateDiagonals(x, y);
+            board[x][y] = QUEEN_CODE;
+            hashCode.setCharAt(x * rows + y, Character.forDigit(QUEEN_CODE, 10));
+            result = true;
+        }
 
 
     	return result;
@@ -113,15 +106,15 @@ public class ChessBoard {
      * @param  y
      * @return 
      */
-    public int[] putKing(int x, int y) {
-    	int [] newPos = new int []{INVALID_POS, INVALID_POS};
+    public boolean putKing(int x, int y) {
+    	boolean result = false;
     	if(isEmpty(x, y) && checkSafeAdjacent(x, y) && checkSafeKnights(x, y)){
 			invalidateAdjacent(x, y);
 			board[x][y] = KING_CODE;  
-            hashCode.setCharAt(x*rows + y, Character.forDigit(KING_CODE, 10));
-			newPos = next(x, y);
+            hashCode.setCharAt(x*rows + y, Character.forDigit(KING_CODE, 10));			
+			result = true;
     	}    	
-    	return newPos;
+    	return result;
     }
     
     /**
@@ -135,15 +128,15 @@ public class ChessBoard {
      * @param  y
      * @return 
      */    
-    public int[] putBishop(int x, int y) {
-    	int [] newPos = new int []{INVALID_POS, INVALID_POS};
+    public boolean putBishop(int x, int y) {
+        boolean result = false;
         if(isEmpty(x, y) && checkSafeDiagonals(x, y) && checkSafeKnights(x, y)) {
 			invalidateDiagonals(x, y);
-			board[x][y] = BISHOPS_CODE;     
-            hashCode.setCharAt(x*rows + y, Character.forDigit(BISHOPS_CODE, 10));
-			newPos = next(x, y);
+			board[x][y] = BISHOP_CODE;     
+            hashCode.setCharAt(x*rows + y, Character.forDigit(BISHOP_CODE, 10));
+            result = true;
     	}
-    	return newPos;
+    	return result;
     }
     
     /**
@@ -157,15 +150,15 @@ public class ChessBoard {
      * @param  y
      * @return 
      */
-    public int[] putRook(int x, int y) {
-    	int [] newPos = new int []{INVALID_POS, INVALID_POS};
+    public boolean putRook(int x, int y) {
+        boolean result = false;
     	if(isEmpty(x, y) && checkSafeRowAndColumn(x, y) && checkSafeKnights(x, y) ) {
 			invalidateRowAndColumn(x, y);
-			board[x][y] = ROOKS_CODE;        
-			hashCode.setCharAt(x*rows + y, Character.forDigit(ROOKS_CODE, 10));
-			newPos = next(x, y);
+			board[x][y] = ROOK_CODE;        
+			hashCode.setCharAt(x*rows + y, Character.forDigit(ROOK_CODE, 10));
+			result = true;
     	}    	
-    	return newPos;
+    	return result;
     }
     
     /**
@@ -179,39 +172,16 @@ public class ChessBoard {
      * @param  y
      * @return 
      */
-    public int[] putKnight(int x, int y) {
-    	int [] newPos = new int []{INVALID_POS, INVALID_POS};
+    public boolean putKnight(int x, int y) {
+        boolean result = false;
     	if(isEmpty(x, y) && checkSafeKnights(x, y)){
 			invalidateKnights(x, y);
-			board[x][y] = KNIGHTS_CODE;
-			hashCode.setCharAt(x*rows + y, Character.forDigit(KNIGHTS_CODE, 10));
-			newPos = next(x, y);
+			board[x][y] = KNIGHT_CODE;
+			hashCode.setCharAt(x*rows + y, Character.forDigit(KNIGHT_CODE, 10));
+			result = true;
     	}    	    
-    	return newPos;
+    	return result;
     }
-    
-    /**
-     * Gets the next available positions, if not returns [-1, -1]
-     * 
-     * @param  x the row where begins the search
-     * @param  y the column where begins the search
-     * @return
-     */
-    public int[] next(int x, int y) {
-    	int [] newPosAvailable = new int []{INVALID_POS, INVALID_POS};
-
-        if(x < 0 || x >= rows || y < 0 || y >= columns) 
-            return newPosAvailable;        
-
-        for(int j = y; j < columns; j++) 
-            if(board[x][j] == EMPTY_CODE) return new int []{x, j};        
-    	
-    	for (int i = x + 1; i < rows; i++) 
-            for (int j = 0; j < columns; j++) 
-            	if(board[i][j] == EMPTY_CODE)  return new int []{i, j};          
-    	    	    	   
-    	return newPosAvailable;
-    }           
 
     /**
      * Checks if there is a knigth attacking to the possition
@@ -397,7 +367,7 @@ public class ChessBoard {
         if(x >= rows || y >= columns || x < 0 || y < 0) 
             return false;        
 
-        return board[x][y] == KNIGHTS_CODE;
+        return board[x][y] == KNIGHT_CODE;
     }
 
     /**
@@ -474,13 +444,13 @@ public class ChessBoard {
             case QUEEN_CODE:
                 charCode = 'Q';
                 break;
-            case BISHOPS_CODE:
+            case BISHOP_CODE:
                 charCode = 'B';
                 break;
-            case ROOKS_CODE:
+            case ROOK_CODE:
                 charCode = 'R';
                 break;
-            case KNIGHTS_CODE:
+            case KNIGHT_CODE:
                 charCode = 'N';
                 break;
             default:
@@ -491,6 +461,11 @@ public class ChessBoard {
         return charCode;
     }
     
+    /**
+     * Matrix transposition
+     * 
+     * @param m
+     */
     private void transpose(int[][] m) {
         for (int i = 0; i < m.length; i++) {
             for (int j = i; j < m[0].length; j++) {
@@ -501,6 +476,11 @@ public class ChessBoard {
         }
     }
     
+    /**
+     * Matrix row swapping 
+     * 
+     * @param m
+     */
     private static void swapRows(int[][] m) {
         for (int  i = 0, k = m.length - 1; i < k; ++i, --k) {
             int[] x = m[i];
@@ -510,7 +490,7 @@ public class ChessBoard {
     }
     
     /**
-     * Rotates the board matrix 90 degrees in the 
+     * Rotates the board matrix 90 degrees to the right 
      */
     public void rotate() {
         swapRows(board);
@@ -535,31 +515,17 @@ public class ChessBoard {
      */
     public String getHashCode() {
     	return hashCode.toString();
-    }
+    }    
     
-    /**
-     * Gets the number of rows
-     * 
-     * @return int
-     */
     public int getRowCount() {
     	return rows;
     }
     
-    /**
-     * Gets the number of columns
-     * 
-     * @return int
-     */
     public int getColumnCount() {
         return columns;
     }
-
     
     public int[][] getBoard() {
         return board;
-    }
-    
-    
-	
+    }	
 }
